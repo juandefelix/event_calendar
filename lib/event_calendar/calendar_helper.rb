@@ -25,7 +25,7 @@ module EventCalendar
     # :day_nums_height => 18 # Height of the day numbers tables (included in the 'height' option)
     # :event_height => 18 # Height of an individual event row
     # :event_margin => 1 # Spacing of the event rows
-    # :event_padding_top => 1 # Padding on the top of the event rows (increase to move text down)
+    # , => 1 # Padding on the top of the event rows (increase to move text down)
     #
     # :use_all_day => false # If set to true, will check for an 'all_day' boolean field when displaying an event.
     #     If it is an all day event, or the event is multiple days, then it will display as usual.
@@ -38,7 +38,7 @@ module EventCalendar
     #     the day number will be a link. Override the day_link method for greater customization.
     #
     # For more customization, you can pass a code block to this method
-    # The varibles you have to work with in this block are passed in an agruments hash:
+    # The varibles you have to work with in this block are passed in an arguments hash:
     # :event => The event to be displayed.
     # :day => The day the event is displayed on. Usually the first day of the event, or the first day of the week,
     #   if the event spans a calendar row.
@@ -78,7 +78,7 @@ module EventCalendar
       options = defaults.merge options
 
       # default month name for the given number
-      if options[:show_header]
+      if options[:show_header] && options[:month_name_text]
         options[:month_name_text] ||= I18n.translate(:'date.month_names')[options[:month]]
       end
 
@@ -142,7 +142,7 @@ module EventCalendar
       cal << %(<table class="ec-day-names" style="height: #{options[:day_names_height]}px;" cellpadding="0" cellspacing="0">)
       cal << %(<tbody><tr>)
       day_names.each do |day_name|
-        cal << %(<th class="ec-day-name" title="#{day_name}">#{day_name}</th>)
+        cal << %(<th class="ec-day-name" title="#{day_name}">&nbsp;&nbsp;#{day_name}</th>)
       end
       cal << %(</tr></tbody></table>)
 
@@ -213,10 +213,7 @@ module EventCalendar
 
                 cal << %(<td class="ec-event-cell" colspan="#{(dates[1]-dates[0]).to_i + 1}" )
                 cal << %(style="padding-top: #{options[:event_margin]}px;">)
-                cal << %(<div id="ec-#{class_name}-#{event.id}" class="ec-event )
-                if class_name != "event"
-                  cal << %(ec-#{class_name} )
-                end
+                cal << %(<div class="ec-event ec-#{class_name}-#{event.id} )
                 if no_bg
                   cal << %(ec-event-no-bg" )
                   cal << %(style="color: #{event.color}; )
